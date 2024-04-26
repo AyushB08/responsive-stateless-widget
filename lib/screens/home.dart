@@ -9,17 +9,22 @@ import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
+
+  TextEditingController controller = TextEditingController();
    
 
   final ValueNotifier<String> filterText = ValueNotifier<String>("");
   final ValueNotifier<String> searchText = ValueNotifier<String>("");
+
   final todosList = ToDo.todoList();
   final todoController = TextEditingController();
   List<ToDo> foundToDo = [];
+  var widgetManager;
   
 
+
   Widget build(BuildContext context) {
-    final widgetManager = Provider.of<WidgetManager>(context);
+    widgetManager = Provider.of<WidgetManager>(context);
     foundToDo = todosList;
     return  Scaffold( 
       backgroundColor: tdBGColor,
@@ -81,7 +86,9 @@ class Home extends StatelessWidget {
                   child: ElevatedButton ( 
                     child: Text("+", style: TextStyle(fontSize: 40,),),
                     onPressed: () { 
+                      filterText.value = "";
                       widgetManager.addWidget(todoController.text, handleToDoChange, deleteToDoItem);
+                      controller.text="";
                     },
                     style: ElevatedButton.styleFrom( 
                       
@@ -110,6 +117,8 @@ class Home extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20)
               ),
               child: TextField( 
+
+                controller: controller,
        
                 decoration: InputDecoration( 
                   contentPadding: EdgeInsets.all(0),
@@ -123,22 +132,30 @@ class Home extends StatelessWidget {
                     hintStyle: TextStyle(color: tdGrey),
 
                 ),
+                onChanged: (String value) {
+
+                  // Update filterText with the new search term
+                  filterText.value = value;
+                  // Call runFilter to update foundToDo based on search term
+                  widgetManager.filterWidgets(value);
+                  print("sd");
+                },
                 
               ), 
             )
     );
   }
 
-  void handleToDoChange(ToDo todo) {
-    
-    todo.isDone = !todo.isDone;
+  void handleToDoChange(ToDo id) {
+    widgetManager.changeWidget(id);
+    //todo.isDone = !todo.isDone;
  
     
   }
 
   void deleteToDoItem(String id) {
-    
-    todosList.removeWhere((item) => item.id == id);
+    widgetManager.deleteWidget(id);
+    //todosList.removeWhere((item) => item.id == id);
     
   
   }
