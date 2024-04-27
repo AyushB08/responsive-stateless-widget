@@ -11,7 +11,8 @@ class Home extends StatelessWidget {
   Home({super.key});
 
   TextEditingController controller = TextEditingController();
-   
+
+  
 
   final ValueNotifier<String> filterText = ValueNotifier<String>("");
   final ValueNotifier<String> searchText = ValueNotifier<String>("");
@@ -85,11 +86,15 @@ class Home extends StatelessWidget {
                   margin: EdgeInsets.only(bottom: 20, right: 20),
                   child: ElevatedButton ( 
                     child: Text("+", style: TextStyle(fontSize: 40,),),
+                    
                     onPressed: () { 
                       filterText.value = "";
                       widgetManager.addWidget(todoController.text, handleToDoChange, deleteToDoItem);
+                      todoController.text = "";
                       controller.text = "";
+
                     },
+                 
                     style: ElevatedButton.styleFrom( 
                       
                      
@@ -138,7 +143,7 @@ class Home extends StatelessWidget {
                   filterText.value = value;
                   // Call runFilter to update foundToDo based on search term
                   widgetManager.filterWidgets(value);
-                  print("sd");
+                 
                 },
                 
               ), 
@@ -146,7 +151,7 @@ class Home extends StatelessWidget {
     );
   }
 
-  void handleToDoChange(ToDo id) {
+  void handleToDoChange(String id) {
     widgetManager.changeWidget(id);
     //todo.isDone = !todo.isDone;
  
@@ -160,15 +165,7 @@ class Home extends StatelessWidget {
   
   }
 
-  void addToDoItem(String toDo) {
-   
-    todosList.add(ToDo(id: DateTime.now().millisecondsSinceEpoch.toString(), todoText: toDo));
-    
-
-    todoController.clear();
-    
-  }
-
+  
 
   void runFilter(String enteredKeyword) {
     List<ToDo> results = [];

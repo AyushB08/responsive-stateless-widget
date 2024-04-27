@@ -13,9 +13,10 @@ class WidgetManager extends ChangeNotifier {
   final list = ToDo.todoList();
   List<ToDoItem> totalWidgets = [];
   WidgetManager() : super() {
+    print("TEST");
     for (ToDo toDo in list) {
       totalWidgets.add(ToDoItem( 
-          todo: (ToDo(id: toDo.id, todoText: toDo.todoText)),
+          todo: (ToDo(id: toDo.id, todoText: toDo.todoText, isDone: toDo.isDone)),
           onToDoChanged: changeWidget,
           onDeleteItem: deleteWidget,
       ));
@@ -29,7 +30,7 @@ class WidgetManager extends ChangeNotifier {
 
   void addWidget(toDo, handleChange, deleteItem) {
     totalWidgets.insert(0, ToDoItem( 
-          todo: (ToDo(id: DateTime.now().millisecondsSinceEpoch.toString(), todoText: toDo)),
+          todo: (ToDo(id: (DateTime.now().millisecondsSinceEpoch).toString(), todoText: toDo)),
           onToDoChanged: handleChange,
           onDeleteItem: deleteItem,
     ));
@@ -40,28 +41,34 @@ class WidgetManager extends ChangeNotifier {
   }
 
   void changeWidget(id) {
-    int index = widgets.value.indexWhere((item) => item.todo.id == id);
-    var currentItem = widgets.value[index];
-    var newItem = ToDoItem(
-    todo: ToDo(
-      id: currentItem.todo.id,
-      todoText: currentItem.todo.todoText, // Replace this with the new text
-      isDone: !currentItem.todo.isDone,
-    ),
-    onToDoChanged: changeWidget,
-    onDeleteItem: deleteWidget,
-    );
-    widgets.value[index] = newItem;
+    try {
+      int index = widgets.value.indexWhere((item) => item.todo.id == id);
+      var currentItem = widgets.value[index];
+      var newItem = ToDoItem(
+      todo: ToDo(
+        id: currentItem.todo.id,
+        todoText: currentItem.todo.todoText, // Replace this with the new text
+        isDone: !currentItem.todo.isDone,
+      ),
+      onToDoChanged: changeWidget,
+      onDeleteItem: deleteWidget,
+      );
+      widgets.value[index] = newItem;
 
-    index = totalWidgets.indexWhere((item) => item.todo.id == id);
-    currentItem = totalWidgets[index];
+      index = totalWidgets.indexWhere((item) => item.todo.id == id);
+      currentItem = totalWidgets[index];
+      
     
+      totalWidgets[index] = newItem;
+      
+
   
-    totalWidgets[index] = newItem;
-    
-
- 
-    widgets.notifyListeners();
+      widgets.notifyListeners();
+    }
+    catch (e, stackTrace) {
+      print("Exception: $e");
+      print("Stack Trace:\n$stackTrace");
+    }
   }
 
   void filterWidgets(String enteredKeyword) {

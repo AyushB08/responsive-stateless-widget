@@ -20,6 +20,7 @@ class ToDoItem extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 20),
       child: ListTile(
           onTap: () {
+           
             onToDoChanged(todo.id);
           },
           shape: RoundedRectangleBorder(
