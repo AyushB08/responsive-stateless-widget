@@ -88,7 +88,7 @@ class Home extends StatelessWidget {
                     onPressed: () { 
                       filterText.value = "";
                       widgetManager.addWidget(todoController.text, handleToDoChange, deleteToDoItem);
-                      controller.text="";
+                      controller.text = "";
                     },
                     style: ElevatedButton.styleFrom( 
                       

@@ -12,7 +12,17 @@ void main() {
 class WidgetManager extends ChangeNotifier {
   final list = ToDo.todoList();
   List<ToDoItem> totalWidgets = [];
-  
+  WidgetManager() : super() {
+    for (ToDo toDo in list) {
+      totalWidgets.add(ToDoItem( 
+          todo: (ToDo(id: toDo.id, todoText: toDo.todoText)),
+          onToDoChanged: changeWidget,
+          onDeleteItem: deleteWidget,
+      ));
+    }
+    widgets.value = totalWidgets;
+    widgets.notifyListeners();
+  }
   ValueNotifier<List<ToDoItem>> widgets = ValueNotifier<List<ToDoItem>>([]);
 
   
@@ -30,13 +40,26 @@ class WidgetManager extends ChangeNotifier {
   }
 
   void changeWidget(id) {
-    
-    print("soooooo");
-    var item = widgets.value.firstWhere(
-      (item) => item.todo.id == id
-     // Return null if no item with matching id is found
+    int index = widgets.value.indexWhere((item) => item.todo.id == id);
+    var currentItem = widgets.value[index];
+    var newItem = ToDoItem(
+    todo: ToDo(
+      id: currentItem.todo.id,
+      todoText: currentItem.todo.todoText, // Replace this with the new text
+      isDone: !currentItem.todo.isDone,
+    ),
+    onToDoChanged: changeWidget,
+    onDeleteItem: deleteWidget,
     );
-    item.todo.isDone = !item.todo.isDone;
+    widgets.value[index] = newItem;
+
+    index = totalWidgets.indexWhere((item) => item.todo.id == id);
+    currentItem = totalWidgets[index];
+    
+  
+    totalWidgets[index] = newItem;
+    
+
  
     widgets.notifyListeners();
   }
@@ -57,6 +80,9 @@ class WidgetManager extends ChangeNotifier {
    void deleteWidget(String id) {
     
     widgets.value.removeWhere((item) => item.todo.id == id);
+    widgets.notifyListeners();
+
+    totalWidgets.removeWhere((item) => item.todo.id == id);
     widgets.notifyListeners();
   
   }
